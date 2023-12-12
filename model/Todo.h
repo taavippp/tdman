@@ -1,3 +1,6 @@
+#ifndef TODO_H
+#define TODO_H
+
 #include <iostream>
 #include <ctime>
 #include <vector>
@@ -19,3 +22,5 @@ class Todo {
     
     std::vector<std::string> toStrings();
 };
+
+#endif

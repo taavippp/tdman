@@ -15,14 +15,14 @@ namespace json = rapidjson;
 const std::string SETTINGS_FILE = "user/settings.json";
 
 int main() {
-    json::Document document = FileController::readFromFile(SETTINGS_FILE);
+    json::Document doc =  FileController::readFromFile(SETTINGS_FILE);
     
-    if (!document.IsObject()) {
+    if (!doc.IsObject()) {
         throw std::runtime_error("Broken JSON file user/data.json");
     }
 
-    cout << document["date_opened"].GetString() << endl;
-    document["date_opened"].SetString("13-12-2023");
-    cout << document["date_opened"].GetString() << endl;
+    doc["date_opened"].SetString("13-12-2023");
+
+    FileController::writeToFile(&doc, SETTINGS_FILE);
     return 0;
 }

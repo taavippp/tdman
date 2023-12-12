@@ -3,7 +3,7 @@
 #include "../rapidjson/istreamwrapper.h"
 #include "../rapidjson/ostreamwrapper.h"
 #include "../rapidjson/document.h"
-#include "../rapidjson/writer.h" 
+#include "../rapidjson/prettywriter.h" 
 #include "FileController.h"
 
 using namespace rapidjson;
@@ -21,10 +21,10 @@ json::Document FileController::readFromFile(std::string filename) {
     return document;
 }
 
-bool FileController::writeToFile(json::Document document, std::string filename) {
+bool FileController::writeToFile(json::Document* document, std::string filename) {
     ofstream file(filename.c_str());
     OStreamWrapper wrapper(file);
 
-    Writer<OStreamWrapper> writer(wrapper);
-    return document.Accept(writer);
+    PrettyWriter<OStreamWrapper> writer(wrapper);
+    return document -> Accept(writer);
 }

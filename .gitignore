@@ -1,1 +1,5 @@
 /rapidjson
+/.git
+/user
+*.json
+*.exe
