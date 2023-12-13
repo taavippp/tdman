@@ -23,7 +23,8 @@ I previously made an application called _hwman_, which was written in Python. Th
 -   exit
 -   settings
 -   set
+-   reset
 
 ## Libraries
 
--   RapidJSON
+-   [nlohmann/json](https://github.com/nlohmann/json)

@@ -1,9 +1,15 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include <sstream>
 #include "Todo.h"
 
 using namespace std;
+using namespace nlohmann;
+
+Todo::Todo(nlohmann::json data) {
+    this -> deserialize(data);
+}
 
 Todo* Todo::setGroup(std::string group) {
     this -> group = group;
@@ -25,15 +31,31 @@ Todo* Todo::setCompleted(bool completed) {
     return this;
 }
 
-std::vector<std::string> Todo::toStrings() {
-    std::vector<std::string> output;
-    output.push_back(this -> group);
-    output.push_back(this -> task);
+std::string Todo::toString() {
+    std::stringstream stream;
+    stream << this -> group << std::endl;
+    stream << this -> task << std::endl;
     std::string date = asctime(localtime(&this -> timestamp));
     date.back() = '\0';
-    output.push_back(
-        date
-    );
-    output.push_back(this -> completed ? "[x]" : "[ ]");
-    return output;
+    stream << date << std::endl;
+    stream << this -> completed ? "[x]" : "[ ]";
+    stream << std::endl;
+    return stream.str();
+}
+
+nlohmann::json Todo::serialize() {
+    nlohmann::json data;
+    data["group"] = this -> group;
+    data["task"] = this -> task;
+    data["timestamp"] = this -> timestamp;
+    data["completed"] = this -> completed;
+    return data;
+}
+
+void Todo::deserialize(nlohmann::json data) {
+    this
+        -> setGroup(data["group"])
+        -> setTask(data["task"])
+        -> setTimestamp(data["timestamp"])
+        -> setCompleted(data["completed"]);
 }

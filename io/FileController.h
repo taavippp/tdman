@@ -2,17 +2,15 @@
 #define FILECONTROLLER_H
 
 #include <iostream>
-#include "../rapidjson/document.h"
+#include "../nlohmann/json.hpp"
 
-using namespace rapidjson;
 using namespace std;
-
-namespace json = rapidjson;
+using namespace nlohmann;
 
 class FileController {
     public:
-    static json::Document readFromFile(std::string filename);
-    static bool writeToFile(json::Document* document, std::string filename);
+    static nlohmann::json readFromFile(std::string filename);
+    static void writeToFile(nlohmann::json data, std::string filename);
 };
 
 #endif

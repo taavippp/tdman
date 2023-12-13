@@ -2,10 +2,12 @@
 #define TODO_H
 
 #include <iostream>
-#include <ctime>
 #include <vector>
+#include <ctime>
+#include "../nlohmann/json.hpp"
 
 using namespace std;
+using namespace nlohmann;
 
 class Todo {
     private:
@@ -15,12 +17,18 @@ class Todo {
     bool completed = false;
 
     public:
+    Todo() = default;
+    Todo(nlohmann::json data);
+    virtual ~Todo() = 0;
+
     Todo* setGroup(std::string group);
     Todo* setTask(std::string task);
     Todo* setTimestamp(time_t timestamp);
     Todo* setCompleted(bool completed);
     
-    std::vector<std::string> toStrings();
+    std::string toString();
+    nlohmann::json serialize();
+    void deserialize(nlohmann::json data);
 };
 
 #endif

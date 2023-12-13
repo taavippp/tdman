@@ -1,28 +1,18 @@
 #include <iostream>
-#include <vector>
-#include <memory>
-#include <fstream>
-#include <sstream>
-#include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 #include "io/FileController.h"
 #include "model/Todo.h"
 
 using namespace std;
-using namespace rapidjson;
+using namespace nlohmann;
 
-namespace json = rapidjson;
-
-const std::string SETTINGS_FILE = "user/settings.json";
+const std::string CONFIG_FILE = "user/config.json";
 
 int main() {
-    json::Document doc =  FileController::readFromFile(SETTINGS_FILE);
+    nlohmann::json config = FileController::readFromFile(CONFIG_FILE);
+    std::cout << "Loaded configuration file." << endl;
+    nlohmann::json data = FileController::readFromFile(config["file"]);
+    std::cout << "Loaded data file " << config["file"] << "." << endl;
     
-    if (!doc.IsObject()) {
-        throw std::runtime_error("Broken JSON file user/data.json");
-    }
-
-    doc["date_opened"].SetString("13-12-2023");
-
-    FileController::writeToFile(&doc, SETTINGS_FILE);
     return 0;
 }
