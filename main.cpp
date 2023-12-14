@@ -14,9 +14,16 @@ int main() {
     nlohmann::json config = configFile.readFromFile();
     FileController dataFile(config["file"]);
     nlohmann::json data = dataFile.readFromFile();
-    Todo* todo = new Todo;
-    todo -> setTask("take a nap");
-    TodoController todos = TodoController();
-    todos.addTodo(*todo);
+    TodoController todoController(data);
+
+    Todo* todo = new Todo();
+    todo -> setTask("shopping");
+
+    todoController.addTodo(todo);
+
+    data = todoController.serialize();
+
+    dataFile.writeToFile(data);
+
     return 0;
 }

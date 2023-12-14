@@ -1,4 +1,13 @@
 {
-	"groups": ["Default"],
-	"tasks": []
+    "groups": [
+        "Default"
+    ],
+    "todos": [
+        {
+            "completed": false,
+            "group": "Default",
+            "task": "shopping",
+            "timestamp": 1702582526
+        }
+    ]
 }

@@ -1,31 +1,42 @@
 #include <iostream>
 #include <chrono>
+#include "../nlohmann/json.hpp"
 #include "../model/TodoSortableProperty.h"
 #include "../model/TimeUnit.h"
 #include "../model/Todo.h"
 #include "TodoController.h"
 
+TodoController::TodoController(nlohmann::json data) {
+    this -> deserialize(data);
+}
+
 TodoController::~TodoController() {
     delete this;
 }
 
-vector<Todo>* TodoController::getTodos() {
+vector<std::string>* TodoController::getGroups() {
+    return &this -> groups;
+}
+
+vector<Todo*>* TodoController::getTodos() {
     return &this -> todos;
 }
 
 Todo* TodoController::getTodo(size_t index) {
-    return &this -> todos[index];
+    return this -> todos[index];
 }
 
 void TodoController::addGroup(std::string name) {
     this -> groups.push_back(name);
 }
 
-void TodoController::addTodo(Todo todo) {
+void TodoController::addTodo(Todo* todo) {
+    std::cout << "Adding " << todo -> getTask() << endl;
     this -> todos.push_back(todo);
+    std::cout << "Added" << endl;
 }
 
-void TodoController::setTodo(size_t index, Todo todo) {
+void TodoController::setTodo(size_t index, Todo* todo) {
     this -> todos[index] = todo;
 }
 
@@ -38,27 +49,27 @@ void TodoController::deleteTodo(size_t index) {
 }
 
 void TodoController::postponeTodo(size_t index, short amount, TimeUnit unit) {
-    Todo* todo = &this -> todos[index];
+    Todo* todo = this -> todos[index];
     time_t timestamp = todo -> getTimestamp();
     time_t postponeBy = amount * unit;
     todo -> setTimestamp(timestamp + postponeBy);
 }
 
-std::function<bool(Todo, Todo)> sortByCompleted = [](Todo a, Todo b) {
-    return a.getCompleted() > b.getCompleted();
+std::function<bool(Todo*, Todo*)> const sortByGroup = [](Todo* a, Todo* b) {
+    return a -> getGroup() > b -> getGroup();
 };
 
-std::function<bool(Todo, Todo)> sortByGroup = [](Todo a, Todo b) {
-    return a.getGroup() > b.getGroup();
+std::function<bool(Todo*, Todo*)> const sortByTimestamp = [](Todo* a, Todo* b) {
+    return a -> getTimestamp() > b -> getTimestamp();
 };
 
-std::function<bool(Todo, Todo)> const sortByTimestamp = [](Todo a, Todo b) {
-    return a.getTimestamp() > b.getTimestamp();
+std::function<bool(Todo*, Todo*)> const sortByCompleted = [](Todo* a, Todo* b) {
+    return a -> getCompleted() > b -> getCompleted();
 };
 
-vector<Todo> TodoController::sortTodos(TodoSortableProperty property) {
-    vector<Todo> sorted(this -> todos);
-    std::function<bool(Todo, Todo)> sortFunc;
+vector<Todo*> TodoController::sortTodos(TodoSortableProperty property) {
+    vector<Todo*> sorted(this -> todos);
+    std::function<bool(Todo*, Todo*)> sortFunc;
     switch (property) {
         case TodoSortableProperty::GROUP:
             sortFunc = sortByGroup;
@@ -76,4 +87,50 @@ vector<Todo> TodoController::sortTodos(TodoSortableProperty property) {
         sortFunc
     );
     return sorted;
+}
+
+nlohmann::json TodoController::serialize() {
+    std::cout << "Before json object formation";
+
+    nlohmann::json output = nlohmann::json::object();
+    nlohmann::json groupsJSON = nlohmann::json::array();
+    nlohmann::json todosJSON = nlohmann::json::array();
+    
+    std::cout << "Before serialization";
+
+    for (std::string group : this -> groups) {
+        groupsJSON.push_back(group);
+    }
+
+    std::cout << "Groups serialized";
+
+    for (Todo* todo : this -> todos) {
+        todosJSON.push_back(todo -> serialize());
+    }
+
+    std::cout << "Todos serialized";
+
+    output["groups"] = groupsJSON;
+    output["todos"] = todosJSON;
+
+    std::cout << "Added to output";
+
+    return output;
+}
+
+void TodoController::deserialize(nlohmann::json data) {
+    nlohmann::json groupsJSON = data["groups"];
+    nlohmann::json todosJSON = data["todos"];
+    if (!groupsJSON.is_array() || !todosJSON.is_array()) {
+        throw std::runtime_error("Invalid JSON in data file.");
+    }
+
+    for (nlohmann::json group : groupsJSON) {
+        this -> addGroup(group);
+    }
+
+    for (nlohmann::json todoJSON : todosJSON) {
+        Todo* todo = new Todo(todoJSON);
+        this -> addTodo(todo);
+    }
 }
