@@ -13,9 +13,8 @@ I previously made an application called _hwman_, which was written in Python. Th
 -   edit
 -   delete
 -   postpone
--   find
--   list
 -   sort
+-   list
 
 ### Meta
 

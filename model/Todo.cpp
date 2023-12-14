@@ -11,6 +11,26 @@ Todo::Todo(nlohmann::json data) {
     this -> deserialize(data);
 }
 
+Todo::~Todo() {
+    delete this;
+}
+
+std::string Todo::getGroup() {
+    return this -> group;
+}
+
+std::string Todo::getTask() {
+    return this -> task;
+}
+
+time_t Todo::getTimestamp() {
+    return this -> timestamp;
+}
+
+bool Todo::getCompleted() {
+    return this -> completed;
+}
+
 Todo* Todo::setGroup(std::string group) {
     this -> group = group;
     return this;

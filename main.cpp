@@ -1,18 +1,22 @@
 #include <iostream>
 #include "nlohmann/json.hpp"
-#include "io/FileController.h"
+#include "controller/FileController.h"
+#include "controller/TodoController.h"
 #include "model/Todo.h"
 
 using namespace std;
 using namespace nlohmann;
 
-const std::string CONFIG_FILE = "user/config.json";
+const std::string CONFIG_FILENAME = "user/config.json";
 
 int main() {
-    nlohmann::json config = FileController::readFromFile(CONFIG_FILE);
-    std::cout << "Loaded configuration file." << endl;
-    nlohmann::json data = FileController::readFromFile(config["file"]);
-    std::cout << "Loaded data file " << config["file"] << "." << endl;
-    
+    FileController configFile(CONFIG_FILENAME);
+    nlohmann::json config = configFile.readFromFile();
+    FileController dataFile(config["file"]);
+    nlohmann::json data = dataFile.readFromFile();
+    Todo* todo = new Todo;
+    todo -> setTask("take a nap");
+    TodoController todos = TodoController();
+    todos.addTodo(*todo);
     return 0;
 }

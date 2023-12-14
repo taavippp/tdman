@@ -19,7 +19,12 @@ class Todo {
     public:
     Todo() = default;
     Todo(nlohmann::json data);
-    virtual ~Todo() = 0;
+    ~Todo();
+
+    std::string getGroup();
+    std::string getTask();
+    time_t getTimestamp();
+    bool getCompleted();
 
     Todo* setGroup(std::string group);
     Todo* setTask(std::string task);
