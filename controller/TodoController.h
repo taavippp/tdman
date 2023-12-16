@@ -7,6 +7,9 @@
 #include "../model/TimeUnit.h"
 #include "../model/Todo.h"
 
+using namespace std;
+using namespace nlohmann;
+
 class TodoController {
     private:
     vector<std::string> groups;

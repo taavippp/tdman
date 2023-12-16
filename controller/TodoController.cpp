@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <functional>
 #include "../nlohmann/json.hpp"
 #include "../model/TodoSortableProperty.h"
 #include "../model/TimeUnit.h"
@@ -31,9 +32,7 @@ void TodoController::addGroup(std::string name) {
 }
 
 void TodoController::addTodo(Todo* todo) {
-    std::cout << "Adding " << todo -> getTask() << endl;
     this -> todos.push_back(todo);
-    std::cout << "Added" << endl;
 }
 
 void TodoController::setTodo(size_t index, Todo* todo) {
@@ -90,30 +89,20 @@ vector<Todo*> TodoController::sortTodos(TodoSortableProperty property) {
 }
 
 nlohmann::json TodoController::serialize() {
-    std::cout << "Before json object formation";
-
     nlohmann::json output = nlohmann::json::object();
     nlohmann::json groupsJSON = nlohmann::json::array();
     nlohmann::json todosJSON = nlohmann::json::array();
-    
-    std::cout << "Before serialization";
 
     for (std::string group : this -> groups) {
         groupsJSON.push_back(group);
     }
 
-    std::cout << "Groups serialized";
-
     for (Todo* todo : this -> todos) {
         todosJSON.push_back(todo -> serialize());
     }
 
-    std::cout << "Todos serialized";
-
     output["groups"] = groupsJSON;
     output["todos"] = todosJSON;
-
-    std::cout << "Added to output";
 
     return output;
 }

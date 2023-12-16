@@ -20,9 +20,6 @@ I previously made an application called _hwman_, which was written in Python. Th
 
 -   help
 -   exit
--   settings
--   set
--   reset
 
 ## Libraries
 
