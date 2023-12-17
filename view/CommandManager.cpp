@@ -144,6 +144,10 @@ bool CommandManager::cmdMarkTodo() {
     } catch (std::exception e) {
         return false;
     }
+    size_t size = todoController -> getTodos() -> size();
+    if (index < 0 || index >= size) {
+        return false;
+    }
     Todo* todo = todoController -> getTodo(index);
     todo -> setCompleted(!todo -> getCompleted());
     return true;

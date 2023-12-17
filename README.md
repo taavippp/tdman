@@ -3,12 +3,13 @@
 ## What is this?
 
 A command line application for managing to-do lists.
-I previously made an application called _hwman_, which was written in Python. This application is written in C++, for an university course.
+I previously made a similar application called [hwman](https://github.com/taavippp/hwman), which was written in Python. This application is written in C++, for Tallinn University's C++ OOP course.
 
 ## Commands
 
 ### To-do list management
 
+-   mark
 -   add
 -   delete
 -   postpone
