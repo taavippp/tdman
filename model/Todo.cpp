@@ -58,7 +58,11 @@ std::string Todo::toString() {
     std::string date = asctime(localtime(&this -> timestamp));
     date.back() = '\0';
     stream << date << std::endl;
-    stream << this -> completed ? "[x]" : "[ ]";
+    if (this -> completed) {
+        stream << "done";    
+    } else {
+        stream << "not done";
+    }
     stream << std::endl;
     return stream.str();
 }

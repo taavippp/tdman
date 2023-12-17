@@ -4,37 +4,54 @@
 #include <iostream>
 #include <sstream>
 #include "../controller/TodoController.h"
+#include "../controller/FileController.h"
+#include "../model/Todo.h"
+#include "../model/TimeUnit.h"
+#include "../model/TodoSortableProperty.h"
 
 using namespace std;
 
-// commands, flags should be stored in a map somehow
 class CommandManager {
-    private:
-    std::stringstream input;
-    TodoController* todoController;
-
-    Todo parseTodo();
-
-    void cmdAddGroup();
-    void cmdAddTodo();
-    void cmdEditGroup();
-    void cmdEditTodo();
-    void cmdDeleteGroup();
-    void cmdDeleteTodo();
-    void cmdPostpone();
-    void cmdSort();
-    void cmdList();
-
-    void cmdHelp();
-    void cmdExit();
-
     public:
-    CommandManager(TodoController* todoController);
+    enum Command {
+        INVALID,
+        MARK,
+        ADD,
+        DELETE,
+        POSTPONE,
+        SORT,
+        LIST,
+        HELP,
+        EXIT,
+    };
+
+    CommandManager(TodoController* todoController, FileController* fileController);
     ~CommandManager();
 
     void takeInput();
-    bool isValidInput();
     std::string parseInput();
+
+    private:
+    static std::map<std::string, Command> commands;
+    static std::map<Command, std::string> outputs;
+    static std::map<std::string, TimeUnit> timeUnitFlags;
+    static std::map<std::string, TodoSortableProperty> sortablePropertyFlags;
+
+    std::stringstream input;
+    TodoController* todoController;
+    FileController* fileController;
+
+    Todo* takeTodoInput();
+    void printTodos(vector<Todo*> todos);
+
+    bool cmdMarkTodo();
+    bool cmdAddTodo();
+    bool cmdDeleteTodo();
+    bool cmdPostpone();
+    bool cmdSort();
+    void cmdList();
+
+    void cmdExit();
 };
 
 #endif

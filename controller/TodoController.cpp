@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <functional>
+#include <algorithm>
 #include "../nlohmann/json.hpp"
 #include "../model/TodoSortableProperty.h"
 #include "../model/TimeUnit.h"
@@ -12,11 +13,10 @@ TodoController::TodoController(nlohmann::json data) {
 }
 
 TodoController::~TodoController() {
+    for (Todo* todo : this -> todos) {
+        delete todo;
+    }
     delete this;
-}
-
-vector<std::string>* TodoController::getGroups() {
-    return &this -> groups;
 }
 
 vector<Todo*>* TodoController::getTodos() {
@@ -27,10 +27,6 @@ Todo* TodoController::getTodo(size_t index) {
     return this -> todos[index];
 }
 
-void TodoController::addGroup(std::string name) {
-    this -> groups.push_back(name);
-}
-
 void TodoController::addTodo(Todo* todo) {
     this -> todos.push_back(todo);
 }
@@ -39,15 +35,11 @@ void TodoController::setTodo(size_t index, Todo* todo) {
     this -> todos[index] = todo;
 }
 
-void TodoController::deleteGroup(size_t index) {
-    this -> groups.erase(this -> groups.begin() + index);
-}
-
 void TodoController::deleteTodo(size_t index) {
     this -> todos.erase(this -> todos.begin() + index);
 }
 
-void TodoController::postponeTodo(size_t index, short amount, TimeUnit unit) {
+void TodoController::postponeTodo(size_t index, int amount, TimeUnit unit) {
     Todo* todo = this -> todos[index];
     time_t timestamp = todo -> getTimestamp();
     time_t postponeBy = amount * unit;
@@ -90,36 +82,35 @@ vector<Todo*> TodoController::sortTodos(TodoSortableProperty property) {
 
 nlohmann::json TodoController::serialize() {
     nlohmann::json output = nlohmann::json::object();
-    nlohmann::json groupsJSON = nlohmann::json::array();
     nlohmann::json todosJSON = nlohmann::json::array();
-
-    for (std::string group : this -> groups) {
-        groupsJSON.push_back(group);
-    }
 
     for (Todo* todo : this -> todos) {
         todosJSON.push_back(todo -> serialize());
     }
 
-    output["groups"] = groupsJSON;
     output["todos"] = todosJSON;
 
     return output;
 }
 
 void TodoController::deserialize(nlohmann::json data) {
-    nlohmann::json groupsJSON = data["groups"];
     nlohmann::json todosJSON = data["todos"];
-    if (!groupsJSON.is_array() || !todosJSON.is_array()) {
+    if (!todosJSON.is_array()) {
         throw std::runtime_error("Invalid JSON in data file.");
-    }
-
-    for (nlohmann::json group : groupsJSON) {
-        this -> addGroup(group);
     }
 
     for (nlohmann::json todoJSON : todosJSON) {
         Todo* todo = new Todo(todoJSON);
         this -> addTodo(todo);
+    }
+}
+
+size_t TodoController::getIndex(Todo* todo) {
+    auto it = find(todos.begin(), todos.end(), todo);
+    if (it != todos.end()) {
+        size_t index = it - todos.begin();
+        return index;
+    } else {
+        return -1;
     }
 }

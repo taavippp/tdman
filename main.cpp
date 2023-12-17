@@ -3,27 +3,24 @@
 #include "controller/FileController.h"
 #include "controller/TodoController.h"
 #include "model/Todo.h"
+#include "view/CommandManager.h"
 
 using namespace std;
 using namespace nlohmann;
 
-const std::string CONFIG_FILENAME = "user/config.json";
+const std::string DATA_FILENAME = "user/data.json";
 
 int main() {
-    FileController configFile(CONFIG_FILENAME);
-    nlohmann::json config = configFile.readFromFile();
-    FileController dataFile(config["file"]);
-    nlohmann::json data = dataFile.readFromFile();
+    FileController file(DATA_FILENAME);
+    nlohmann::json data = file.readFromFile();
     TodoController todoController(data);
 
-    Todo* todo = new Todo();
-    todo -> setTask("shopping");
+    CommandManager commandManager(&todoController, &file);
 
-    todoController.addTodo(todo);
-
-    data = todoController.serialize();
-
-    dataFile.writeToFile(data);
+    while (true) {
+        commandManager.takeInput();
+        std::cout << commandManager.parseInput() << endl;
+    }
 
     return 0;
 }

@@ -2,6 +2,7 @@
 #define TODOSORTABLEPROPERTY_H
 
 enum TodoSortableProperty {
+    INVALID,
     GROUP,
     TIMESTAMP,
     COMPLETED,

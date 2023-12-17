@@ -1,13 +1,22 @@
 {
-    "groups": [
-        "Default"
-    ],
     "todos": [
         {
             "completed": false,
-            "group": "Default",
-            "task": "shopping",
-            "timestamp": 1702582526
+            "group": "School",
+            "task": "Study for cybersec",
+            "timestamp": 1702829771
+        },
+        {
+            "completed": true,
+            "group": "abc",
+            "task": "test",
+            "timestamp": 1702830668
+        },
+        {
+            "completed": false,
+            "group": "sdfsd",
+            "task": "sdf",
+            "timestamp": 1826210774
         }
     ]
 }

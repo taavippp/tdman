@@ -10,7 +10,6 @@ I previously made an application called _hwman_, which was written in Python. Th
 ### To-do list management
 
 -   add
--   edit
 -   delete
 -   postpone
 -   sort

@@ -2,7 +2,7 @@ g++ ^
 -I controller ^
 -I model ^
 -I view ^
--o main.exe ^
+-o tdman.exe ^
 main.cpp ^
 controller/*.cpp ^
 model/*.cpp ^
