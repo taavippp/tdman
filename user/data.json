@@ -11,12 +11,6 @@
             "group": "abc",
             "task": "test",
             "timestamp": 1702830668
-        },
-        {
-            "completed": false,
-            "group": "sdfsd",
-            "task": "sdf",
-            "timestamp": 1826210774
         }
     ]
 }
